@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Consumption</title>
+    <title>Gestión de Usuarios</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
         form {
             margin-bottom: 20px;
         }
-        input, textarea, button {
+        input, button {
             display: block;
             width: 100%;
             margin-bottom: 10px;
@@ -39,81 +39,77 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>API Consumption</h1>
+    <h1>Gestión de Usuarios</h1>
 
-    <!-- Formulario para cursos -->
-    <h2>Crear Curso</h2>
-    <form id="cursoForm">
-        <input type="text" id="cursoNombre" placeholder="Nombre del Curso" required>
-        <textarea id="cursoDescripcion" placeholder="Descripción del Curso" required></textarea>
-        <input type="number" id="cursoCreditos" placeholder="Créditos" required>
-        <button type="submit">Crear Curso</button>
+    <!-- Formulario para crear usuario -->
+    <h2>Crear Usuario</h2>
+    <form id="usuarioForm">
+        <input type="text" id="usuarioNombre" placeholder="Nombre" required>
+        <input type="text" id="usuarioApellido" placeholder="Apellido" required>
+        <input type="text" id="usuarioTelefono" placeholder="Teléfono" required>
+        <input type="text" id="usuarioDireccion" placeholder="Dirección" required>
+        <button type="submit">Crear Usuario</button>
     </form>
-    <div class="response" id="cursoResponse"></div>
+    <div class="response" id="usuarioResponse"></div>
 
-    <!-- Formulario para estudiantes -->
-    <h2>Crear Estudiante</h2>
-    <form id="estudianteForm">
-        <input type="text" id="estudianteNombre" placeholder="Nombre del Estudiante" required>
-        <input type="text" id="estudianteApellido" placeholder="Apellido" required>
-        <input type="email" id="estudianteEmail" placeholder="Email" required>
-        <input type="date" id="estudianteFechaNacimiento" placeholder="Fecha de Nacimiento" required>
-        <input type="text" id="estudianteTelefono" placeholder="Teléfono">
-        <button type="submit">Crear Estudiante</button>
-    </form>
-    <div class="response" id="estudianteResponse"></div>
+    <!-- Lista de usuarios -->
+    <h2>Lista de Usuarios</h2>
+    <button id="listarUsuarios">Cargar Usuarios</button>
+    <ul id="usuariosList"></ul>
 </div>
 
 <script>
-    const apiUrl = "http://localhost:8002/api";
+    const apiUrl = "http://localhost:8002/api/usuarios";
 
-    // Crear Curso
-    document.getElementById('cursoForm').addEventListener('submit', async (e) => {
+    // Crear Usuario
+    document.getElementById('usuarioForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const nombre = document.getElementById('cursoNombre').value;
-        const descripcion = document.getElementById('cursoDescripcion').value;
-        const creditos = document.getElementById('cursoCreditos').value;
+        const nombre = document.getElementById('usuarioNombre').value;
+        const apellido = document.getElementById('usuarioApellido').value;
+        const telefono = document.getElementById('usuarioTelefono').value;
+        const direccion = document.getElementById('usuarioDireccion').value;
 
         try {
-            const response = await fetch(`${apiUrl}/cursos`, {
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ nombre, descripcion, creditos }),
+                body: JSON.stringify({ nombre, apellido, telefono, direccion }),
             });
             const data = await response.json();
-            document.getElementById('cursoResponse').innerText = JSON.stringify(data, null, 2);
+            document.getElementById('usuarioResponse').innerText =
+                response.ok ? 'Usuario creado exitosamente' : `Error: ${data.message || 'No se pudo crear el usuario'}`;
         } catch (error) {
-            document.getElementById('cursoResponse').innerText = `Error: ${error.message}`;
+            document.getElementById('usuarioResponse').innerText = `Error: ${error.message}`;
         }
     });
 
-    // Crear Estudiante
-    document.getElementById('estudianteForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const nombre = document.getElementById('estudianteNombre').value;
-        const apellido = document.getElementById('estudianteApellido').value;
-        const email = document.getElementById('estudianteEmail').value;
-        const fechaNacimiento = document.getElementById('estudianteFechaNacimiento').value;
-        const telefono = document.getElementById('estudianteTelefono').value;
-
+    // Listar Usuarios
+    document.getElementById('listarUsuarios').addEventListener('click', async () => {
         try {
-            const response = await fetch(`${apiUrl}/estudiantes`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ nombre, apellido, email, fechaNacimiento, telefono }),
-            });
+            const response = await fetch(apiUrl);
             const data = await response.json();
-            document.getElementById('estudianteResponse').innerText = JSON.stringify(data, null, 2);
+            const usuariosList = document.getElementById('usuariosList');
+            usuariosList.innerHTML = ''; // Limpiar la lista existente
+            data.forEach(usuario => {
+                const li = document.createElement('li');
+                li.textContent = `${usuario.nombre} ${usuario.apellido} - ${usuario.telefono} - ${usuario.direccion}`;
+                usuariosList.appendChild(li);
+            });
         } catch (error) {
-            document.getElementById('estudianteResponse').innerText = `Error: ${error.message}`;
+            document.getElementById('usuariosList').innerHTML = `<li>Error: ${error.message}</li>`;
         }
     });
 </script>

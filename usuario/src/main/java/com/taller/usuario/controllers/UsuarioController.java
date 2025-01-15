@@ -7,20 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import java.util.Date;
-
 import jakarta.validation.Valid;
-
 import java.util.List;
 import java.util.Optional;
 
-
+@RestController
 @RequestMapping("/api/usuarios")
 @CrossOrigin(origins = "http://localhost:5500")
-
-@Entity
 public class UsuarioController {
 
     @Autowired
@@ -37,7 +30,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable int id) {
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         Optional<Usuario> usuarioOptional = usuarioService.obtenerPorId(id);
         if (usuarioOptional.isPresent()) {
             return ResponseEntity.ok().body(usuarioOptional.get());
@@ -46,7 +39,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editar(@Valid @RequestBody Usuario usuario, @PathVariable int id) {
+    public ResponseEntity<?> editar(@Valid @RequestBody Usuario usuario, @PathVariable Long id) {
         Optional<Usuario> usuarioOptional = usuarioService.obtenerPorId(id);
         if (usuarioOptional.isPresent()) {
             Usuario usuarioDB = usuarioOptional.get();
@@ -60,7 +53,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable int id) {
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         usuarioService.eliminar(id);
         return ResponseEntity.noContent().build();
     }

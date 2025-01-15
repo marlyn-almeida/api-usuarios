@@ -1,21 +1,23 @@
 version: '3'
 services:
   mysql:
-     image: mysql:8
-     environment:
-       MYSQL_ROOT_PASSWORD: 12345
-       MYSQL_DATABASE: sisdb2025
-     ports:
-       - "3306:3306"
-     networks:
-       - my-network
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: taller  # Asegúrate de que la base de datos es "taller" como configuraste en tu Spring Boot
+    ports:
+      - "3306:3306"
+    networks:
+      - my-network
   app:
     image: java-app-image
     build: .
     ports:
       - "8002:8002"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/sisdb2025
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/taller  # Cambié el nombre de la base de datos a "taller"
+      - SPRING_DATASOURCE_USERNAME=root  # Añadí el usuario "root" para la conexión
+      - SPRING_DATASOURCE_PASSWORD=12345  # Añadí la contraseña "12345"
     networks:
       - my-network
   frontend:
@@ -27,6 +29,7 @@ services:
       - "5500:80"
     networks:
       - my-network
+
 networks:
   my-network:
     driver: bridge
