@@ -22,8 +22,8 @@ public class Usuario {
     @PastOrPresent(message = "La fecha de registro debe ser pasada o presente")
     private LocalDate fechaRegistro; // Cambiado a LocalDate
 
-    @Min(value = 18, message = "La edad mínima es 18")
-    @Max(value = 120, message = "La edad máxima es 120")
+    @Min(value = 1, message = "La edad mínima es 18")
+    @Max(value = 100, message = "La edad máxima es 120")
     private int edad;
 
     // Getters y Setters

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,9 +56,9 @@
     <h2>Crear Usuario</h2>
     <form id="usuarioForm">
         <input type="text" id="usuarioNombre" placeholder="Nombre" required>
-        <input type="text" id="usuarioApellido" placeholder="Apellido" required>
-        <input type="text" id="usuarioTelefono" placeholder="Teléfono" required>
-        <input type="text" id="usuarioDireccion" placeholder="Dirección" required>
+        <input type="email" id="usuarioEmail" placeholder="Email" required>
+        <input type="number" id="usuarioEdad" placeholder="Edad" required min="1" max="100">
+        <input type="date" id="usuarioFechaRegistro" placeholder="Fecha de Registro" required>
         <button type="submit">Crear Usuario</button>
     </form>
     <div class="response" id="usuarioResponse"></div>
@@ -76,9 +76,9 @@
     document.getElementById('usuarioForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const nombre = document.getElementById('usuarioNombre').value;
-        const apellido = document.getElementById('usuarioApellido').value;
-        const telefono = document.getElementById('usuarioTelefono').value;
-        const direccion = document.getElementById('usuarioDireccion').value;
+        const email = document.getElementById('usuarioEmail').value;
+        const edad = document.getElementById('usuarioEdad').value;
+        const fechaRegistro = document.getElementById('usuarioFechaRegistro').value;
 
         try {
             const response = await fetch(apiUrl, {
@@ -86,7 +86,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ nombre, apellido, telefono, direccion }),
+                body: JSON.stringify({ nombre, email, edad, fechaRegistro }),
             });
             const data = await response.json();
             document.getElementById('usuarioResponse').innerText =
@@ -105,7 +105,7 @@
             usuariosList.innerHTML = ''; // Limpiar la lista existente
             data.forEach(usuario => {
                 const li = document.createElement('li');
-                li.textContent = `${usuario.nombre} ${usuario.apellido} - ${usuario.telefono} - ${usuario.direccion}`;
+                li.textContent = `${usuario.nombre} - ${usuario.email} - Edad: ${usuario.edad} - Fecha de Registro: ${new Date(usuario.fechaRegistro).toLocaleDateString()}`;
                 usuariosList.appendChild(li);
             });
         } catch (error) {
