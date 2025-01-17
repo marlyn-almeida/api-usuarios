@@ -13,6 +13,6 @@ public class UsuConfig implements WebMvcConfigurer{
                 .allowedOrigins("http://localhost:80") // Aquí se coloca la URL de tu frontend
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // Métodos HTTP permitidos
                 .allowedHeaders("*") // Permitir todos los headers
-                .allowCredentials(true); // Si es necesario enviar cookies o credenciales
+                .allowCredentials(true); //  es necesario enviar cookies o credenciales
     }
 }

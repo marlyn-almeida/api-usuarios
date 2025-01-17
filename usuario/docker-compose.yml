@@ -1,24 +1,32 @@
-version: '3'
-services:
-  #mysql:
-    #image: mysql:8
-   # environment:
-  #    MYSQL_ROOT_PASSWORD: 12345
-  #     MYSQL_DATABASE: taller  # Asegúrate de que la base de datos es "taller" como configuraste en tu Spring Boot
-  #   ports:
-  #     - "3306:3306"
-  #    networks:
-  #     - my-network
-  app:
-    image: java-app-image
-    build: .
-    ports:
-      - "8002:8002"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3307/taller  # Cambié el nombre de la base de datos a "taller"
-    networks:
-      - my-network
+version: '3.8'
 
-networks:
-  my-network:
-    driver: bridge
+services:
+  # Servicio para la base de datos MySQL
+  db:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: taller
+    ports:
+      - "3307:3306"  # Redirigir el puerto 3307 del host al 3306 del contenedor
+    volumes:
+      - mysql-data:/var/lib/mysql  # Persistir datos en el volumen
+
+  # Servicio para la aplicación Spring Boot
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile  # El archivo Dockerfile para la app
+    container_name: springboot-app
+    ports:
+      - "8002:8002"  # Redirigir el puerto 8002 del host al 8002 del contenedor
+    depends_on:
+      - db  # Asegura que la base de datos se inicie antes de la app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/taller
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root_password
+
+volumes:
+  mysql-data:
